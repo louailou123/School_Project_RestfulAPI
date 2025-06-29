@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 const props =defineProps({

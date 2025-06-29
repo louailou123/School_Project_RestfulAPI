@@ -1,4 +1,3 @@
-
 <template>
 
         <div class="card">
@@ -10,13 +9,16 @@
 
 <script setup>
 import { ref } from "vue";
-
+import { useRouter } from 'vue-router';
 import Menubar from 'primevue/menubar';
+
+const router = useRouter();
 
 const items = ref([
     {
         label: 'Home',
-        icon: 'pi pi-home'
+        icon: 'pi pi-home',
+        command: () => router.push('/')
     },
     {
         label: 'Students',
@@ -24,11 +26,13 @@ const items = ref([
                 items: [
             {
                 label: 'Add Students',
-                icon: 'pi pi-bolt'
+                icon: 'pi pi-bolt',
+                command: () => router.push('/Students/add')
             },
             {
                 label: 'Check Students',
-                icon: 'pi pi-server'
+                icon: 'pi pi-server',
+                command: () => router.push('/Students/check')
             },
         ]
     },
@@ -38,17 +42,20 @@ const items = ref([
         items: [
             {
                 label: 'Add teachers',
-                icon: 'pi pi-bolt'
+                icon: 'pi pi-bolt',
+                command: () => router.push('/Teachers/add')
             },
             {
                 label: 'Check teachers',
-                icon: 'pi pi-server'
+                icon: 'pi pi-server',
+                command: () => router.push('/Teachers/check')
             },
         ]
     },
     {
-        label: 'Contact',
-        icon: 'pi pi-envelope'
+        label: 'Payements',
+        icon: 'pi pi-envelope',
+        command: () => router.push('/Payements')
     }
 ]);
 </script>
