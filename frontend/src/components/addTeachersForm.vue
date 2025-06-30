@@ -2,13 +2,13 @@
 <template > 
 <div width="100%" height="100%" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color:var(--p-sky-400) ;">
 
-    <h1 class="text-center" style="text-align:center">Add Students</h1>
-    <p class="text-center" style="text-align:center">Please fill in the form below to add a new student.</p>
+    <h1 class="text-center" style="text-align:center">Add Teachers</h1>
+    <p class="text-center" style="text-align:center">Please fill in the form below to add a new teacher.</p>
     <div class="card">
 
         <FileUpload name="demo[]" url="/student/upload" @upload="onAdvancedUpload($event)" :multiple="false" accept=".xlsx,.xls" :maxFileSize="1000000">
             <template #empty>
-                <span style="color: var(--p-emerald-500);">Drag and drop files to here to upload students from excel tables.</span>
+                <span style="color: var(--p-emerald-500);">Drag and drop files to here to upload teachers from excel tables.</span>
             </template>
         </FileUpload>
     </div>
