@@ -1,5 +1,6 @@
 import Add_Students from '@/views/Add_Students.vue'
 import Add_Teachers from '@/views/Add_Teachers.vue'
+import Check_Students from '@/views/Check_Students.vue'
 import Home from '@/views/Home.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -21,6 +22,11 @@ const router = createRouter({
       path:"/Teachers/add",
       name:"add_Teachers_page",
       component:Add_Teachers
+    }    ,
+        {
+      path:"/Students/check",
+      name:"check_Students_page",
+      component:Check_Students
     }
   ],
 })
