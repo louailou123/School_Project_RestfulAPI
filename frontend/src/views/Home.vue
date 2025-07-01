@@ -2,7 +2,7 @@
 
 import cards from '@/components/Cards.vue';
 import navbar from '@/components/navbar.vue'
-import stats from '@/components/Stats.vue';
+import stats from '@/components/homeStats.vue';
 </script>
 <template setup>
 <navbar/>
