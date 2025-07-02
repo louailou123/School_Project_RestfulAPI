@@ -13,19 +13,7 @@
         </FileUpload>
     </div>
     <form
-        class="flex flex-col gap-4"
-        :model="{
-            Fullname,
-            Phone_Number,
-            age,
-            Birthday
-        }"
-        :rules="{
-            Fullname: 'required',
-            Phone_Number: 'required|numeric|max:9999999999',
-            age: 'required|numeric',
-            Birthday: 'required'
-        }"  style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction: column; align-items: center; gap: 70px;"
+        class="flex flex-col gap-4"  style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction: column; align-items: center; gap: 70px;"
         
         @submit.prevent="onSubmit">
 
@@ -102,6 +90,8 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Button from 'primevue/button';
+import axios from 'axios';
+import FileUpload from 'primevue/fileupload';
 const Fullname = ref(null);
 const age = ref(null);
 const Birthday = ref(null);
@@ -118,12 +108,9 @@ const Email_error_message = ref(null);
 const Email = ref(null);
     const toast = useToast(); 
     // Import the FileUpload component
-import FileUpload from 'primevue/fileupload';
 // Register the FileUpload component
-    const onAdvancedUpload = () => {
-    toast.add({ severity: 'info', summary: 'Success', detail: 'Students Uploaded', life: 3000 });
-};
-const onSubmit = () => {
+
+const  onSubmit = async () => {
     fullname_error_message.value = null;
     Phone_Number_error_message.value = null;    
     Age_error_message.value = null;
@@ -168,19 +155,60 @@ var b =true
         b=false
     }
     if(b){
-toast.add({
+        try{
+const response = await axios.post('http://localhost:5000/teachers/add',{
+            Fullname: Fullname.value,
+            Phone_Number: Phone_Number.value,
+            age: age.value,
+            Birthday: Birthday.value,
+            Address: Address.value,
+            Email: Email.value,
+            Payement: Payement.value
+        })
+         if(response.status == 201)
+         {
+           toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Student added successfully',
+        detail: 'Teacher added successfully',
         life: 3000
+        
     });
-    Fullname.value = '';
+        Fullname.value = '';
     Phone_Number.value = null;  
     age.value = null;
     Birthday.value = '';
     Address.value = '';
-    Email.value = '';
-    console.log('Form submitted successfully');
+    Email.value = '';}
+        else if(response.status == 400)
+    {
+        toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Validation failed',
+        life: 3000})
+    }
+    else if(response.status == 500)
+    {
+                toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Server error',
+        life: 3000})
+    }
+}
+
+        catch(error)
+        {
+                     toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Validation error ',
+        life: 3000})
+            console.log('error',error)
+        }
+
+
    }
     }
 

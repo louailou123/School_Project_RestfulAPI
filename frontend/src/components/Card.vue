@@ -5,7 +5,7 @@
         <template #content>
 {{ count }} {{ description }}
             <div>
-                            <Button label="check" />
+                     <RouterLink :to="description == '$' ? `/Payements`:`/${description}s/check`"><Button label="check" /></RouterLink>      
             </div>
         </template>
         

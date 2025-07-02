@@ -14,20 +14,9 @@
     </div>
     <form
         class="flex flex-col gap-4"
-        :model="{
-            Fullname,
-            Phone_Number,
-            age,
-            Birthday
-        }"
-        :rules="{
-            Fullname: 'required',
-            Phone_Number: 'required|numeric|max:9999999999',
-            age: 'required|numeric',
-            Birthday: 'required'
-        }"  style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction: column; align-items: center; gap: 70px;"
+style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction: column; align-items: center; gap: 70px;"
         
-        @submit.prevent="onSubmit">
+        @submit.prevent="addStudent">
 
     <div style="display: grid; grid-template-columns: 10fr 10fr; gap: 40px;place-items: center; width: 100%;">
         <div  class="input-container">        
@@ -96,12 +85,13 @@
 </template >
 <script setup> 
 import { useToast } from 'primevue/usetoast';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import FloatLabel from 'primevue/floatlabel';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Button from 'primevue/button';
+import axios from 'axios';
 const Fullname = ref(null);
 const age = ref(null);
 const Birthday = ref(null);
@@ -123,7 +113,13 @@ import FileUpload from 'primevue/fileupload';
     const onAdvancedUpload = () => {
     toast.add({ severity: 'info', summary: 'Success', detail: 'Students Uploaded', life: 3000 });
 };
-const onSubmit = () => {
+
+
+// send the form data to the backend
+// You can use axios or fetch to send the data to your backend API
+
+
+const addStudent  = async () => {
     fullname_error_message.value = null;
     Phone_Number_error_message.value = null;    
     Age_error_message.value = null;
@@ -168,22 +164,41 @@ var b =true
         b=false
     }
     if(b){
-toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Student added successfully',
-        life: 3000
-    });
+    try {
+        const response = await axios.post('http://localhost:5000/students/add', {
+            Fullname: Fullname.value,
+            Phone_Number: Phone_Number.value,
+            age: age.value,
+            Birthday: Birthday.value,
+            Address: Address.value,
+            Email: Email.value,
+            Payement: Payement.value
+        });
+        if(response.status == 201) {
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Student added successfully', life: 3000 });
     Fullname.value = '';
     Phone_Number.value = null;  
     age.value = null;
     Birthday.value = '';
     Address.value = '';
     Email.value = '';
-    console.log('Form submitted successfully');
-   }
-    }
+        } else {
+            if(response.status == 400) {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid data provided', life: 3000 });
+            } else if (response.status == 500) {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Server error, please try again later', life: 3000 });
+            }
+        }
 
+
+    } catch (error) { 
+        console.error('Error submitting form:', error);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to add student', life: 3000 });
+    }
+}
+
+   }
+;
 
 
 ;

@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.1.2",
+    "axios": "^1.10.0",
     "chart.js": "^4.5.0",
+    "nodemon": "^3.1.10",
     "primevue": "^4.3.5",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.17",
