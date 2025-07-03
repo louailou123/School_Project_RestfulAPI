@@ -7,7 +7,7 @@
             <template #loading> Loading students Please wait. </template>
             <Column field="id" header="ID" style="min-width: 12rem">
                 <template #body="{ data }">
-                    {{ data.id }}
+                    {{ data.studentId }}
                 </template>
             </Column>
             <Column header="Fullname" filterField="Fullname" style="min-width: 12rem">
@@ -33,7 +33,7 @@
                       <Column header="Age" filterField="Age" style="min-width: 12rem">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <span>{{ data.Age}}</span>
+                        <span>{{ data.age}}</span>
                     </div>
                 </template>
                 <template #filter="{ filterModel, filterCallback }">
@@ -83,8 +83,8 @@
             <Column style="min-width: 12rem">
                      <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <RouterLink :to="`/student/update/${data.id}`" ><Button style="width: 60px;background-color: var(--p-green-400) !important;" rounded >Edit</Button></RouterLink> 
-                        <Button type="submit" @click="deleteStudent(data.id)" rounded severity="warn" style="width: 60px;background-color: var(--p-red-600) !important;">Delete</Button>
+                        <RouterLink :to="`/Student/update/${data.studentId}`" ><Button style="width: 60px;background-color: var(--p-green-400) !important;" rounded >Edit</Button></RouterLink> 
+                        <Button type="submit" @click="deleteStudent(data.studentId)" rounded severity="warn" style="width: 60px;background-color: var(--p-red-600) !important;">Delete</Button>
                     </div>
                 </template>
                 
@@ -105,6 +105,8 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Button from 'primevue/button';
+import axios from 'axios';
+import { useToast } from 'primevue';
 const filters = ref({
     Fullname: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Phone_Number: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -114,37 +116,52 @@ const filters = ref({
     Email: { value: null, matchMode: FilterMatchMode.EQUALS } ,
      Birthday: { value: null, matchMode: FilterMatchMode.DATE_IS }
 });
+let students=ref([])
+let loading = ref(true);
+const toast =useToast()
+ const getStudents = async () => {
+    try{
+    const response = await axios.get("http://localhost:5000/students/check")
+    if(response.data.students)
+    {
+      loading.value = false
+      students.value = response.data.students
+    }}
+catch(error) 
+   {
+      console.log('err',error)
+   }
+
+}
  
+ onMounted(getStudents);  
 
 
-
-onMounted(() => {
-// function to get the students data from the API
-    // This is a placeholder, replace with actual API call
-    // we can use loading state to show a loading spinner
-    // For now, we will just log a message
-
-    console.log('Component mounted, ready to fetch students data');
-});
-const students = ref([
-    { id: 1001, Fullname: 'Black Watch', Phone_Number: '0987654321', Age: 30, Birthday: '1995-02-02', Address: '456 Elm St', Payement: 200, Email: ''},
-    { id: 1000, Fullname: 'Bamboo Watch', Phone_Number: '1234567890', Age: 25, Birthday: '2000-01-01', Address: '123 Main St', Payement: 100, Email: 'hi@gmail.com'},
-    { id: 1002, Fullname: 'Blue Band', Phone_Number: '1122334455', Age: 22, Birthday: '2001-03-03', Address: '789 Oak St', Payement: 150, Email: '' },
-    { id: 1003, Fullname: 'Red Band', Phone_Number: '5566778899', Age: 28, Birthday: '1997-04-04', Address: '321 Pine St', Payement: 180, Email: '' },
-    { id: 1004, Fullname: 'Green Band', Phone_Number: '2233445566', Age: 26, Birthday: '1999-05-05', Address: '654 Maple St', Payement: 120, Email: '' }
-]);
  
 
  // error in date filter to deal with later
   
-const deleteStudent = (id) => {
-// Function to delete a student by ID
-    // This is a placeholder, replace with actual API call
-    // For now, we will just log the ID to be deleted
+const deleteStudent = async (studentId) => { 
+    if (confirm('Are you sure you want to delete this student?')) { 
+        // User confirmed the deletion
+        console.log(`Deleting student with ID: ${studentId}`);
+try{
+        const response =await axios.delete(`http://localhost:5000/students/delete/${studentId}`)
+        if(response.status == 200)
+        {
+            // Successfully deleted the student
+            console.log(`Student with ID: ${studentId} deleted successfully`);
+            // Optionally, you can refresh the student list or perform any other actions
+            students.value = students.value.filter(student => student.studentId !== studentId); 
+    toast.add({ severity: 'info', summary: 'Success', detail: 'Student Deleted', life: 3000 });
+        }
+}
+catch(error){
+        console.log('err' , error)
+}
+          
 
-    if (confirm('Are you sure you want to delete this student?')) {
-// suppresion logic
-        console.log(`Student with ID: ${id} deleted`);
+    
     } else {
         // User cancelled the deletion
         // You can handle the cancellation here if needed

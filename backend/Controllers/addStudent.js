@@ -29,8 +29,7 @@ export const addStudent = async (req, res) => {
             Email,
             Payement
         }); 
-        const savedStudent = await newStudent.save();
-console.log('Saved student:', savedStudent);
+        await newStudent.save();
         // Respond with success message
         
         res.status(201).json({ message: 'Student added successfully' });
