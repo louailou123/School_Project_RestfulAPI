@@ -1,13 +1,13 @@
 
 <template>
     <div class="card">
-        <DataTable v-model:filters="filters" :value="students" paginator :rows="8" dataKey="id" filterDisplay="row" :loading="loading"
+        <DataTable v-model:filters="filters" :value="teachers" paginator :rows="8" dataKey="id" filterDisplay="row" :loading="loading"
                 :globalFilterFields="['Fullname', 'Phone_Number', 'Age', 'Address', 'Payement', 'Email']">
-            <template #empty> No students found. </template>
-            <template #loading> Loading students Please wait. </template>
+            <template #empty> No teachers found. </template>
+            <template #loading> Loading teachers Please wait. </template>
             <Column field="id" header="ID" style="min-width: 12rem">
                 <template #body="{ data }">
-                    {{ data.id }}
+                    {{ data.teacherId }}
                 </template>
             </Column>
             <Column header="Fullname" filterField="Fullname" style="min-width: 12rem">
@@ -33,7 +33,7 @@
                       <Column header="Age" filterField="Age" style="min-width: 12rem">
                 <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <span>{{ data.Age}}</span>
+                        <span>{{ data.age}}</span>
                     </div>
                 </template>
                 <template #filter="{ filterModel, filterCallback }">
@@ -83,8 +83,8 @@
             <Column style="min-width: 12rem">
                      <template #body="{ data }">
                     <div class="flex items-center gap-2">
-                        <RouterLink :to="`/student/update/${data.id}`" ><Button style="width: 60px;background-color: var(--p-green-400) !important;" rounded >Edit</Button></RouterLink> 
-                        <Button type="submit" @click="deleteStudent(data.id)" rounded severity="warn" style="width: 60px;background-color: var(--p-red-600) !important;">Delete</Button>
+                        <RouterLink :to="`/teacher/update/${data.teacherId}`" ><Button style="width: 60px;background-color: var(--p-green-400) !important;" rounded >Edit</Button></RouterLink> 
+                        <Button type="submit" @click="deleteTeacher(data.teacherId)" rounded severity="warn" style="width: 60px;background-color: var(--p-red-600) !important;">Delete</Button>
                     </div>
                 </template>
                 
@@ -105,6 +105,8 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Button from 'primevue/button';
+import axios from 'axios';
+import { useToast } from 'primevue';
 const filters = ref({
     Fullname: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Phone_Number: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -114,41 +116,46 @@ const filters = ref({
     Email: { value: null, matchMode: FilterMatchMode.EQUALS } ,
      Birthday: { value: null, matchMode: FilterMatchMode.DATE_IS }
 });
- 
+const teachers = ref([])
+ const loading = ref(true)
+const toast = useToast()
 
 
+onMounted(async () => {
+    try{
+     const response =await axios.get("http://localhost:5000/teachers/check")
+     if(response.data.teachers){
+     loading.value = false 
+     teachers.value = response.data.teachers
 
-onMounted(() => {
-// function to get the students data from the API
-    // This is a placeholder, replace with actual API call
-    // we can use loading state to show a loading spinner
-    // For now, we will just log a message
+     }
+    }catch(error)
+    {
+   console.log(error , 'error')
+    }
 
-    console.log('Component mounted, ready to fetch students data');
 });
-const students = ref([
-    { id: 1001, Fullname: 'Black Watch', Phone_Number: '0987654321', Age: 30, Birthday: '1995-02-02', Address: '456 Elm St', Payement: 200, Email: ''},
-    { id: 1000, Fullname: 'Bamboo Watch', Phone_Number: '1234567890', Age: 25, Birthday: '2000-01-01', Address: '123 Main St', Payement: 100, Email: 'hi@gmail.com'},
-    { id: 1002, Fullname: 'Blue Band', Phone_Number: '1122334455', Age: 22, Birthday: '2001-03-03', Address: '789 Oak St', Payement: 150, Email: '' },
-    { id: 1003, Fullname: 'Red Band', Phone_Number: '5566778899', Age: 28, Birthday: '1997-04-04', Address: '321 Pine St', Payement: 180, Email: '' },
-    { id: 1004, Fullname: 'Green Band', Phone_Number: '2233445566', Age: 26, Birthday: '1999-05-05', Address: '654 Maple St', Payement: 120, Email: '' }
-]);
+
  
 
  // error in date filter to deal with later
   
-const deleteStudent = (id) => {
-// Function to delete a student by ID
-    // This is a placeholder, replace with actual API call
-    // For now, we will just log the ID to be deleted
+const deleteTeacher = async (id) => {
+    if (confirm('Are you sure you want to delete this teacher?')) {
+     try{
+        const response =await axios.delete(`http://localhost:5000/teacher/delete/${id}`)
+        if(response.status == 200)
+     {
+      teachers.value = teachers.value.filter(teacher => teacher.teacherId !== id); 
+    toast.add({ severity: 'info', summary: 'Success', detail: 'teacher Deleted', life: 3000 });
+     }
 
-    if (confirm('Are you sure you want to delete this student?')) {
-// suppresion logic
-        console.log(`Student with ID: ${id} deleted`);
+     }catch(error){
+  console.log("err" , error)
+     }
+
     } else {
-        // User cancelled the deletion
-        // You can handle the cancellation here if needed
-        console.log(`Deletion of student with ID: ${id} cancelled`);
+
     }   }
 
 </script>

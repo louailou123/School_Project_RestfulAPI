@@ -5,6 +5,7 @@ import Check_Teachers from '@/views/Check_Teachers.vue'
 import Home from '@/views/Home.vue'
 import Payements from '@/views/Payements.vue'
 import Update_Students from '@/views/Update_Students.vue'
+import Update_Teachers from '@/views/Update_Teachers.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -45,6 +46,12 @@ const router = createRouter({
       path:"/Student/update/:id",
       name:"update_Student_page",
       component : Update_Students
+    }
+    ,
+    {
+      path:"/teacher/update/:id",
+      name:"update_Teachers_page",
+      component : Update_Teachers
     }
   ],
 })

@@ -2,16 +2,14 @@
 <template > 
 <div width="100%" height="100%" style="display: flex; flex-direction: column; align-items: center; justify-content: center; color:var(--p-sky-400) ;">
 
-    <h1 class="text-center" style="text-align:center">Update Student</h1>
-    <p class="text-center" style="text-align:center">Please update the form below to update student.</p>
-    <div class="card">
+    <h1 class="text-center" style="text-align:center">Update Teacher</h1>
+    <p class="text-center" style="text-align:center">Please update the form below to update teacher.</p>
 
-    </div>
     <form
         class="flex flex-col gap-4"
 style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction: column; align-items: center; gap: 70px;"
         
-        @submit.prevent="addStudent">
+        @submit.prevent="addTeacher">
 
     <div style="display: grid; grid-template-columns: 10fr 10fr; gap: 40px;place-items: center; width: 100%;">
         <div  class="input-container">        
@@ -73,7 +71,7 @@ style="width: 50%; height: 100%; margin-top:75px; display: flex; flex-direction:
          <div class="input-container" style="display: flex; gap: 20px; flex-direction: row !important; justify-content: center;">
             <div>               <Button type="submit" severity="secondary" label="Submit"  style="width: 150px; " :disabled="submit_delay" /></div>
 
-               <RouterLink to="/Students/check"> <Button  label="Back" style="width: 150px; " /> </RouterLink>
+               <RouterLink to="/Teachers/check"> <Button  label="Back" style="width: 150px; " /> </RouterLink>
                
 </div>            
     </div>
@@ -110,19 +108,19 @@ const submit_delay = ref(false)
     const toast = useToast(); 
 const route = useRoute()
 const router =useRouter()
-let studentId = route.params.id
+let teacherId = route.params.id
 onMounted(async ()=>{
 try{
-  const response = await axios.get(`http://localhost:5000/student/getinfo/${studentId}`)
-  if(response.data.student)
+  const response = await axios.get(`http://localhost:5000/teacher/getinfo/${teacherId}`)
+  if(response.data.teacher)
   {
-    Fullname.value=response.data.student.Fullname
-    Phone_Number.value=response.data.student.Phone_Number
-    age.value=response.data.student.age
-    Address.value=response.data.student.Address
-    Birthday.value=response.data.student.Birthday
-    Email.value=response.data.student.Email
-    Payement.value=response.data.student.Payement
+    Fullname.value=response.data.teacher.Fullname
+    Phone_Number.value=response.data.teacher.Phone_Number
+    age.value=response.data.teacher.age
+    Address.value=response.data.teacher.Address
+    Birthday.value=response.data.teacher.Birthday
+    Email.value=response.data.teacher.Email
+    Payement.value=response.data.teacher.Payement
   }
 }
 catch(error){
@@ -134,7 +132,7 @@ console.log("err" , error)
 // You can use axios or fetch to send the data to your backend API
 
 
-const addStudent  = async () => {
+const addTeacher  = async () => {
     fullname_error_message.value = null;
     Phone_Number_error_message.value = null;    
     Age_error_message.value = null;
@@ -182,9 +180,9 @@ if(b){
  submit_delay.value=true
 
     try{
-const response = await axios.put(`http://localhost:5000/student/update/${studentId}`,{
-    Fullname : Fullname.value
-    , Phone_Number: Phone_Number.value,
+const response = await axios.put(`http://localhost:5000/teacher/update/${teacherId}`,{
+    Fullname : Fullname.value,
+    Phone_Number: Phone_Number.value,
     age: age.value, 
     Birthday: Birthday.value,
     Address: Address.value,
@@ -193,9 +191,9 @@ const response = await axios.put(`http://localhost:5000/student/update/${student
 })
     if(response.status == 200)
 {
-toast.add({ severity: 'success', summary: 'Success', detail: 'Student updated successfully', life: 3000 }); 
+toast.add({ severity: 'success', summary: 'Success', detail: 'Teacher updated successfully', life: 3000 }); 
     setTimeout(() => {
-        router.push("/Students/check")
+        router.push("/Teachers/check")
     }, 1000);
 }
     }catch(error)
