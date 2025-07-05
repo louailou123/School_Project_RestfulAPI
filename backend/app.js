@@ -4,6 +4,7 @@ import { json } from "express";
 import mongoose from "mongoose";
 import studentRoute from "./Routes/studentRoute.js";
 import teacherRoute from "./Routes/teacherRoute.js"
+import payementRoute from "./Routes/payementRoute.js"
 // Importing the Student model
 import homeRoute from "./Routes/homeRoute.js";
 import cors from "cors";
@@ -11,7 +12,7 @@ import cors from "cors";
 const app=express();
 
 app.use(cors());
-dotenv.config();
+dotenv.config();   
 app.use(json());
 
 
@@ -19,6 +20,7 @@ app.use(json());
 mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("Connected to MongoDB");}).catch((err) => {
   console.error("Error connecting to MongoDB:", err); });
+  app.use(payementRoute)
   app.use (studentRoute)
 app.use(homeRoute);
 app.use(teacherRoute)

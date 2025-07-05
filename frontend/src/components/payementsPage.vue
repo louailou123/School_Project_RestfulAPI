@@ -13,12 +13,24 @@
 <script setup>
 import Chart from 'primevue/chart';
 import { ref, onMounted } from "vue";
- 
+import axios from 'axios';
+ const payementData = ref()
 
-onMounted(() => {
+onMounted(async () => {
     chartData_first.value = setChartData_first();
     chartData_second.value = setChartData_second();
     chartOptions.value = setChartOptions();
+    try{
+        const response =await axios.get("http://localhost:5000/payements")
+
+        payementData.value = response.data.data
+console.log(payementData.value)
+    console.log('done')
+    }
+    catch(error)
+    {
+        console.log(error)
+    }
 });
 const gain=ref(0);
 const gainMonth=ref(0);
@@ -60,7 +72,7 @@ const setChartData_second = () => {
         datasets: [
             {
                 label: 'School Payements',
-                data: dataStudent.map((v, i) => v - dataTeacher[i]),
+                data: Object.values(payementData.value),
                 fill: false,
                 borderColor: documentStyle.getPropertyValue('--p-sky-500'),
                 tension: 0.4
