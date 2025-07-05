@@ -6,7 +6,7 @@
     <p class="text-center" style="text-align:center">Please fill in the form below to add a new student.</p>
     <div class="card">
 
-        <FileUpload name="demo[]" url="/student/upload" @upload="onAdvancedUpload($event)" :multiple="false" accept=".xlsx,.xls" :maxFileSize="1000000">
+        <FileUpload name="file" url="http://localhost:5000/students/upload" :multiple="false" accept=".xlsx,.xls" :maxFileSize="1000000">
             <template #empty>
                 <span style="color: var(--p-emerald-500);">Drag and drop files to here to upload students from excel tables.</span>
             </template>
@@ -107,12 +107,25 @@ const Address_error_message = ref(null);
 const Email_error_message = ref(null);
 const Email = ref(null);
     const toast = useToast(); 
-    // Import the FileUpload component
 import FileUpload from 'primevue/fileupload';
-// Register the FileUpload component
-    const onAdvancedUpload = () => {
-    toast.add({ severity: 'info', summary: 'Success', detail: 'Students Uploaded', life: 3000 });
+const onFileSelect = async (event) => {
+    const file = event.files[0]; // For PrimeVue FileUpload
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await axios.post('http://localhost:5000/students/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        if(response.status ==200)
+          toast.add({ severity: 'success', summary: 'Success', detail: 'File uploaded!', life: 3000 });
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Upload failed', life: 3000 });
+    }
 };
+
 
 
 // send the form data to the backend

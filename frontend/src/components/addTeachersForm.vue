@@ -6,7 +6,7 @@
     <p class="text-center" style="text-align:center">Please fill in the form below to add a new teacher.</p>
     <div class="card">
 
-        <FileUpload name="demo[]" url="/student/upload" @upload="onAdvancedUpload($event)" :multiple="false" accept=".xlsx,.xls" :maxFileSize="1000000">
+        <FileUpload name="file" url="http://localhost:5000/teachers/upload"  :multiple="false" accept=".xlsx,.xls" :maxFileSize="1000000">
             <template #empty>
                 <span style="color: var(--p-emerald-500);">Drag and drop files to here to upload teachers from excel tables.</span>
             </template>
