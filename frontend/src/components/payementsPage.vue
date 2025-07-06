@@ -14,17 +14,27 @@
 import Chart from 'primevue/chart';
 import { ref, onMounted } from "vue";
 import axios from 'axios';
+const gain=ref(0);
+const gainMonth=ref(0);
  const payementData = ref()
 
 onMounted(async () => {
+
+    try{
+        const response =await axios.get("http://localhost:5000/payements")
+   if(response.data.data)
+   {
+        payementData.value = response.data.data
+console.log(payementData.value)
     chartData_first.value = setChartData_first();
     chartData_second.value = setChartData_second();
     chartOptions.value = setChartOptions();
-    try{
-        const response =await axios.get("http://localhost:5000/payements")
+    const data =Object.values(payementData.value)
+    const month = new Date(Date.now())
+    gainMonth.value = data[month.getMonth()]
+    gain.value=data.reduce((acc, curr) => acc + curr, 0);
+   }
 
-        payementData.value = response.data.data
-console.log(payementData.value)
     console.log('done')
     }
     catch(error)
@@ -32,8 +42,7 @@ console.log(payementData.value)
         console.log(error)
     }
 });
-const gain=ref(0);
-const gainMonth=ref(0);
+
 const chartData_first = ref();
 const chartData_second = ref();
 const chartOptions = ref();
@@ -64,6 +73,7 @@ const setChartData_first = () => {
         ]
     };
 };
+
 const setChartData_second = () => {
     const documentStyle = getComputedStyle(document.documentElement);
 
